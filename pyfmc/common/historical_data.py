@@ -1,5 +1,3 @@
-from typing import Tuple
-
 import pandas as pd
 
 
@@ -24,7 +22,7 @@ class HistoricalData:
             self.mean_and_std()
         return self._return_std
 
-    def mean_and_std(self) -> Tuple[float, float]:
+    def mean_and_std(self):
         _returns = (self._raw_data[self.close_index] - self._raw_data[self.open_index]) / self._raw_data[
             self.open_index
         ]
