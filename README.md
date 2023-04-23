@@ -12,3 +12,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip3 install -r requirements.txt
 ```
+
+## Reference
+
+- [Investopedia(How to Use Monte Carlo Simulation With GBM)](https://www.investopedia.com/articles/07/montecarlo.asp)
