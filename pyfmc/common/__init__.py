@@ -2,6 +2,7 @@ import logging
 import torch
 
 from .historical_data import HistoricalData
+from .distribution import Distribution
 
 logger = logging.getLogger("pyfmc.common")
 
