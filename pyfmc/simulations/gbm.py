@@ -1,15 +1,35 @@
 import logging
+from typing import Optional
 from math import sqrt
 
 import torch
+import numpy as np
 import pandas as pd
 from tqdm import trange
 
 from . import Simulations
 from ..exceptions import SimulationException
-from ..common import HistoricalData, get_device, Distribution
+from ..common import HistoricalData, get_device
 
 logger = logging.getLogger("pyfmc.simulations.gbm")
+
+
+class GBMResult:
+    def __init__(
+        self, init_dist: torch.Tensor, final_dist: torch.Tensor, trajectory: Optional[torch.Tensor] = None
+    ) -> None:
+        self.init_dist = init_dist.cpu()
+        self.final_dist = final_dist.cpu()
+        self.trajectory = trajectory.cpu() if trajectory is not None else trajectory
+
+    def price_distribution(self):
+        return self.final_dist.numpy()
+
+    def return_distribution(self):
+        return torch.div(torch.sub(self.final_dist, self.init_dist), self.init_dist).numpy()
+
+    def VaR(self, alpha: float):
+        return np.percentile(self.return_distribution(), alpha)
 
 
 class GBM(Simulations):
@@ -41,6 +61,7 @@ class GBM(Simulations):
         last_price = hist_data.get_latest_close_price()
 
         s0 = torch.tensor([last_price for _ in range(self.n_walkers)], device=device)
+        init_dist = torch.clone(s0)
         s1 = torch.zeros(self.n_walkers, device=device)
         ds = torch.zeros(self.n_walkers, device=device)
         dt = torch.tensor(self.step_size)
@@ -55,4 +76,4 @@ class GBM(Simulations):
             s0 = torch.clone(s1)
 
         s0 = s0[torch.isfinite(s0)]
-        return Distribution(s0.cpu())
+        return GBMResult(init_dist, s0)

@@ -1,5 +1,7 @@
 import pytest
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
 from pyfmc.simulations.gbm import GBM
 from pyfmc.exceptions import SimulationException
@@ -7,8 +9,12 @@ from pyfmc.exceptions import SimulationException
 
 def test_sim():
     sim = GBM(df=pd.read_csv("./tests/data/AAPL.csv"), n_walkers=100_000, n_steps=100)
-    dist = sim.simulate()
-    dist.plot_hist(500, "./result.png")
+    res = sim.simulate()
+    return_dist = res.return_distribution()
+    counts, bins = np.histogram(return_dist, bins=500, density=True)
+    plt.hist(bins[:-1], bins, weights=counts)
+    plt.title("Test GBM")
+    plt.savefig("./result.png", format="png")
 
 
 def test_wrong_df():
