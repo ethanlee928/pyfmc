@@ -1,10 +1,9 @@
-import os
 from setuptools import setup, find_packages
 
 
 setup(
     name="pyfmc",
-    version=os.getenv("VER"),
+    version="0.0.6",
     author="Ethan Lee",
     author_email="ethan2000.el@gmail.com",
     description="Finance Monte-Carlo Simulation using PyTorch",
