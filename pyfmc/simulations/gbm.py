@@ -6,12 +6,54 @@ import torch
 import numpy as np
 import pandas as pd
 from tqdm import trange
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 from . import Simulations
 from ..exceptions import SimulationException
 from ..common import HistoricalData, get_device
 
 logger = logging.getLogger("pyfmc.simulations.gbm")
+
+
+class Trajectory:
+    def __init__(self, dist: torch.Tensor, label: str = "Trajectory") -> None:
+        self.dist = dist
+        self.label = label
+
+    def value(self):
+        return self.dist
+
+    def plot(self, title=None, xlabel=None, ylabel=None):
+        fig, ax = plt.subplots()
+        sns.lineplot(data=self.dist, legend=False)
+        ax.set_xlabel(xlabel or "time")
+        ax.set_ylabel(ylabel or self.label)
+        ax.set_title(title or self.label)
+        return ax
+
+
+class Distribution:
+    def __init__(self, dist: torch.Tensor, label: str = "Distribution"):
+        self.dist = dist.numpy()
+        self.label = label
+
+    def value(self):
+        return self.dist
+
+    def plot(self, bins=10, kde=False, title=None, xlabel=None, ylabel=None):
+        fig, ax = plt.subplots()
+        if kde:
+            sns.kdeplot(data=self.dist, color="blue", fill=True, ax=ax)
+        else:
+            sns.histplot(self.dist, bins=bins, ax=ax)
+        ax.set_xlabel(xlabel or self.label)
+        ax.set_ylabel(ylabel or ("Density" if kde else "Counts"))
+        ax.set_title(title or self.label)
+        return ax
+
+    def __str__(self) -> str:
+        return str(self.dist)
 
 
 class GBMResult:
@@ -23,16 +65,18 @@ class GBMResult:
         self._trajectories = trajectories.cpu() if trajectories is not None else trajectories
 
     def price_distribution(self):
-        return self.final_dist.numpy()
+        return Distribution(self.final_dist, label="Price Distribution")
 
     def trajectories(self):
         if self._trajectories is None:
             logger.warning("No trajectories")
             return
-        return self._trajectories.numpy()
+        return Trajectory(self._trajectories)
 
     def return_distribution(self):
-        return torch.div(torch.sub(self.final_dist, self.init_dist), self.init_dist).numpy()
+        return Distribution(
+            torch.div(torch.sub(self.final_dist, self.init_dist), self.init_dist), label="Return Distribution"
+        )
 
     def VaR(self, alpha: float):
         return np.percentile(self.return_distribution(), alpha)
@@ -68,7 +112,7 @@ class GBM(Simulations):
         std_return = torch.tensor(hist_data.return_std, device=device)
         last_price = hist_data.get_latest_close_price()
 
-        s0 = torch.tensor([last_price for _ in range(self.n_walkers)], device=device)
+        s0 = torch.tensor([last_price] * self.n_walkers, device=device)
         init_dist = torch.clone(s0)
         trajectories = init_dist[: self.n_trajectories] if self.n_trajectories > 0 else None
 
@@ -78,11 +122,10 @@ class GBM(Simulations):
 
         for _ in trange(self.n_steps):
             epsilon = torch.randn(self.n_walkers, device=device)
-            shock = torch.multiply(std_return * sqrt(dt), epsilon)
-            drift = torch.multiply(dt, exp_return)
-            _sum = torch.add(shock, drift)
-            ds = torch.multiply(_sum, s0)
-            s1 = torch.add(s0, ds)
+            shock = (std_return * sqrt(dt)) * epsilon
+            drift = dt * exp_return
+            ds = (shock + drift) * s0
+            s1 = s0 + ds
             s0 = torch.clone(s1)
             if self.n_trajectories > 0:
                 trajectories = torch.concat((trajectories, s0[: self.n_trajectories]))
