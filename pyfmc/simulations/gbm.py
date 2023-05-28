@@ -79,7 +79,7 @@ class GBMResult:
         )
 
     def VaR(self, alpha: float):
-        return np.percentile(self.return_distribution(), alpha)
+        return np.percentile(self.return_distribution().value(), alpha)
 
 
 class GBM(Simulations):

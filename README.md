@@ -27,7 +27,7 @@ simulation = GBM(
         open_index="Open",  # Make sure the DataFrame has column index specified here
         close_index="Close", # Make sure the DataFrame has column index specified here
     )
-result = sim.simulate()
+result = simulation.simulate()
 ```
 
 ### Simulation Results
@@ -36,7 +36,7 @@ result = sim.simulate()
 
 ```python
 price_dist = result.price_distribution()
-price_dist.plot(kde=True)
+price_dist.plot(bins=500)
 plt.show()
 ```
 
