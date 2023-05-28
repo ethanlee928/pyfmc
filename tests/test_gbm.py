@@ -7,7 +7,14 @@ from pyfmc.exceptions import SimulationException
 
 
 def test_sim():
-    sim = GBM(df=pd.read_csv("./tests/data/AAPL.csv"), n_walkers=500_000, n_steps=100, n_trajectories=50)
+    sim = GBM(
+        df=pd.read_csv("./tests/data/AAPL.csv"),
+        n_walkers=500_000,
+        n_steps=100,
+        n_trajectories=50,
+        open_index="Open",
+        close_index="Close",
+    )
     res = sim.simulate()
     return_dist = res.return_distribution()
     return_dist.plot(kde=True)

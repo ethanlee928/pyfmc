@@ -3,6 +3,59 @@
 - An easy-to-use python package to do Monte-Carlo Simulation on stock prices
 - GPU accelerated Monte-Carlo simulation, that could allow simulation more random walkers without a large time penalty
 
+## Installation
+
+```bash
+pip install pyfmc
+```
+
+## Geometric Brownian Motion Simulation
+
+### Configure the simulation
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+from pyfmc.simulations.gbm import GBM
+
+data_path = "./tests/data/AAPL.csv"
+simulation = GBM(
+        df=pd.read_csv("./tests/data/AAPL.csv"),
+        n_walkers=500_000,
+        n_steps=100,
+        n_trajectories=50,
+        open_index="Open",  # Make sure the DataFrame has column index specified here
+        close_index="Close", # Make sure the DataFrame has column index specified here
+    )
+result = sim.simulate()
+```
+
+### Simulation Results
+
+#### Price Distribution
+
+```python
+price_dist = result.price_distribution()
+price_dist.plot(kde=True)
+plt.show()
+```
+
+#### Return Distribution
+
+```python
+return_dist = result.return_distribution()
+return_dist.plot(kde=True)
+plt.show()
+```
+
+### Walkers Trajectories
+
+```python
+trajectories = result.trajectories()
+trajectories.plot()
+plt.show()
+```
+
 ## For Development
 
 Python virtual environment:
