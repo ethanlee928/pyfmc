@@ -40,6 +40,8 @@ price_dist.plot(kde=True)
 plt.show()
 ```
 
+![Price Distribution](./images/price_dist.png)
+
 #### Return Distribution
 
 ```python
@@ -48,12 +50,24 @@ return_dist.plot(kde=True)
 plt.show()
 ```
 
+![Return Distribution](./images/return_dist.png)
+
 ### Walkers Trajectories
 
 ```python
 trajectories = result.trajectories()
 trajectories.plot()
 plt.show()
+```
+
+![Trajectories](./images/trajectory.png)
+
+### Value at Risk (VaR)
+
+```python
+var = result.VaR(alpha=5)
+# output: -0.2515...
+# The worst 5% chance -> -25% return
 ```
 
 ## For Development
@@ -68,4 +82,5 @@ pip3 install -r requirements.txt
 
 ## Reference
 
-- [Investopedia(How to Use Monte Carlo Simulation With GBM)](https://www.investopedia.com/articles/07/montecarlo.asp)
+- [How to Use Monte Carlo Simulation With GBM (Investopedia)](https://www.investopedia.com/articles/07/montecarlo.asp)
+- [Understanding Value at Risk (VaR) and How It’s Computed (Investopedia)](https://www.investopedia.com/terms/v/var.asp)

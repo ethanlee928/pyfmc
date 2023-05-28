@@ -106,22 +106,23 @@ class GBM(Simulations):
     def simulate(self):
         hist_data = HistoricalData(self.df, self.open_index, self.close_index)
         device = get_device() if self.device_acc else torch.device("cpu")
+        dtype = torch.float32 if device == torch.device("mps") else torch.float64
         logger.info("Using device: %s", device)
 
-        exp_return = torch.tensor(hist_data.return_mean, device=device)
-        std_return = torch.tensor(hist_data.return_std, device=device)
+        exp_return = torch.tensor(hist_data.return_mean, device=device, dtype=dtype)
+        std_return = torch.tensor(hist_data.return_std, device=device, dtype=dtype)
         last_price = hist_data.get_latest_close_price()
 
-        s0 = torch.tensor([last_price] * self.n_walkers, device=device)
+        s0 = torch.tensor([last_price] * self.n_walkers, device=device, dtype=dtype)
         init_dist = torch.clone(s0)
         trajectories = init_dist[: self.n_trajectories] if self.n_trajectories > 0 else None
 
-        s1 = torch.zeros(self.n_walkers, device=device)
-        ds = torch.zeros(self.n_walkers, device=device)
+        s1 = torch.zeros(self.n_walkers, device=device, dtype=dtype)
+        ds = torch.zeros(self.n_walkers, device=device, dtype=dtype)
         dt = torch.tensor(self.step_size)
 
         for _ in trange(self.n_steps):
-            epsilon = torch.randn(self.n_walkers, device=device)
+            epsilon = torch.randn(self.n_walkers, device=device, dtype=dtype)
             shock = (std_return * sqrt(dt)) * epsilon
             drift = dt * exp_return
             ds = (shock + drift) * s0

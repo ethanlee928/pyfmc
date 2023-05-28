@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pyfmc",
-    version="0.0.6",
+    version="0.1.0",
     author="Ethan Lee",
     author_email="ethan2000.el@gmail.com",
     description="Finance Monte-Carlo Simulation using PyTorch",
@@ -12,7 +12,7 @@ setup(
     packages=find_packages("."),
     package_dir={"": "."},
     url="https://github.com/ethanlee928/pyfmc",
-    install_requires=["torch==2.0.0", "tqdm==4.65.0", "numpy==1.24.3", "pandas==2.0.0"],
+    install_requires=["torch==2.0.0", "tqdm==4.65.0", "numpy==1.24.3", "pandas==2.0.0", "seaborn==0.12.2"],
     classifiers=[
         "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",
