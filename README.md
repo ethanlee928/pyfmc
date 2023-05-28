@@ -18,9 +18,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pyfmc.simulations.gbm import GBM
 
-data_path = "./tests/data/AAPL.csv"
+data_path = "./tests/data/AAPL.csv" # Replace with one's desired data
 simulation = GBM(
-        df=pd.read_csv("./tests/data/AAPL.csv"),
+        df=pd.read_csv(data_path),
         n_walkers=500_000,
         n_steps=100,
         n_trajectories=50,
