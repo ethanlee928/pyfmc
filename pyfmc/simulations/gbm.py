@@ -18,7 +18,7 @@ logger = logging.getLogger("pyfmc.simulations.gbm")
 
 class Trajectory:
     def __init__(self, dist: torch.Tensor, label: str = "Trajectory") -> None:
-        self.dist = dist
+        self.dist = dist.numpy()
         self.label = label
 
     def value(self):
