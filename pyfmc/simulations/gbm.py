@@ -106,6 +106,7 @@ class GBM(Simulations):
     def simulate(self):
         hist_data = HistoricalData(self.df, self.open_index, self.close_index)
         device = get_device() if self.device_acc else torch.device("cpu")
+        logger.info("Using %s for calculation ...", device)
         dtype = torch.float32 if device == torch.device("mps") else torch.float64
         logger.info("Using device: %s", device)
 
