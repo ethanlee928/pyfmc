@@ -1,17 +1,17 @@
 import logging
-from typing import Optional
 from math import sqrt
+from typing import Optional
 
-import torch
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from tqdm import trange
 import seaborn as sns
-import matplotlib.pyplot as plt
+import torch
+from tqdm import trange
 
-from . import Simulations
-from ..exceptions import SimulationException
 from ..common import HistoricalData, get_device
+from ..exceptions import SimulationException
+from . import Simulations
 
 logger = logging.getLogger("pyfmc.simulations.gbm")
 
@@ -30,7 +30,7 @@ class Trajectory:
         ax.set_xlabel(xlabel or "time")
         ax.set_ylabel(ylabel or self.label)
         ax.set_title(title or self.label)
-        return ax
+        return fig, ax
 
 
 class Distribution:
@@ -50,7 +50,7 @@ class Distribution:
         ax.set_xlabel(xlabel or self.label)
         ax.set_ylabel(ylabel or ("Density" if kde else "Counts"))
         ax.set_title(title or self.label)
-        return ax
+        return fig, ax
 
     def __str__(self) -> str:
         return str(self.dist)

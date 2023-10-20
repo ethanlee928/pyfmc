@@ -1,9 +1,9 @@
-import pytest
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
+import pytest
 
-from pyfmc.simulations.gbm import GBM
 from pyfmc.exceptions import SimulationException
+from pyfmc.simulations.gbm import GBM
 
 
 def test_sim():
