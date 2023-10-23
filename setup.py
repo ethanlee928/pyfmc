@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="pyfmc",
-    version="0.1.4",
+    version="0.1.5",
     author="Ethan Lee",
     author_email="ethan2000.el@gmail.com",
     description="Finance Monte-Carlo Simulation using PyTorch",

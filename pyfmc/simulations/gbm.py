@@ -74,9 +74,12 @@ class GBMResult:
         return Trajectory(self._trajectories)
 
     def return_distribution(self):
-        return Distribution(
-            torch.div(torch.sub(self.final_dist, self.init_dist), self.init_dist), label="Return Distribution"
-        )
+        if self.final_dist.size() != self.init_dist.size():
+            logger.warning("Size mismatch due to MPS mode, fixing ...")
+            init_dist = self.init_dist[: self.final_dist.size(0)]
+        else:
+            init_dist = self.init_dist
+        return Distribution((self.final_dist - init_dist) / init_dist, label="Return Distribution")
 
     def VaR(self, alpha: float):
         return np.percentile(self.return_distribution().value(), alpha)
