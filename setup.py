@@ -11,7 +11,7 @@ setup(
     packages=find_packages("."),
     package_dir={"": "."},
     url="https://github.com/ethanlee928/pyfmc",
-    install_requires=["torch==2.0.0", "tqdm==4.65.0", "numpy==1.24.3", "pandas==2.0.0", "seaborn==0.12.2"],
+    install_requires=["torch==2.4.1", "tqdm==4.66.5", "numpy==1.24.4", "pandas==2.0.3", "matplotlib==3.7.1", "seaborn==0.12.2"],
     classifiers=[
         "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",
